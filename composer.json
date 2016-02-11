@@ -1,0 +1,14 @@
+{
+    "name": "infinety-es/gallery",
+    "description": "Gallery Package Addon",
+    "type": "Laravel 5",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Lagarda",
+            "email": "eric@infinety.es"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
