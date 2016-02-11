@@ -30,8 +30,7 @@ Add Links for Admin routes:
 
 ### Todos
 
- - Write Tests
- - Rethink Github Save
+ * Front Views
 
 License
 ----
