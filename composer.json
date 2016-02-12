@@ -1,14 +1,18 @@
 {
-    "name": "infinety-es/gallery",
-    "description": "Gallery Package Addon",
-    "keywords": ["gallery, photo, laravel 5"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Eric Lagarda",
-            "email": "eric@infinety.es"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {}
+  "name": "infinety-es/gallery",
+  "description": "Gallery Package Addon",
+  "keywords": ["gallery", "photo", "laravel 5", "infinety"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Eric Lagarda",
+      "email": "eric@infinety.es"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "yajra/laravel-datatables-oracle": "~6.0"
+  }
+  "minimum-stability": "dev"
+
 }
