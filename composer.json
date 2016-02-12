@@ -1,6 +1,6 @@
 {
   "name": "infinety-es/gallery",
-  "description": "Gallery Package Addon",
+  "description": "Laravel 5 Photo Gallery System",
   "keywords": ["gallery", "photo", "laravel 5", "infinety"],
   "license": "MIT",
   "authors": [
