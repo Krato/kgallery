@@ -12,7 +12,17 @@
   "require": {
     "php": ">=5.5.9",
     "yajra/laravel-datatables-oracle": "~6.0"
-  }
-  "minimum-stability": "dev"
+  },
+  "autoload": {
+        "psr-4": {
+            "Infinety\\Gallery\\": "src"
+        }
+    },
+  "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
 
 }
