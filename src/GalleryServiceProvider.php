@@ -6,8 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class GalleryServiceProvider extends ServiceProvider
 {
-
-
     protected $commands = [
         'Infinety\Gallery\Commands\migrate',
     ];
@@ -19,34 +17,32 @@ class GalleryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/routes.php';
         }
 
         $this->loadViewsFrom(__DIR__.'/resources/views/', 'gallery');
 
-        /**
+        /*
          * Publishes Migrations files
          */
         $this->publishes([
             realpath(__DIR__.'/migration') => $this->app->databasePath().'/migrations',
         ]);
 
-        /**
+        /*
          * Publishes Lang files
          */
         $this->publishes([
-            realpath(__DIR__.'/resources/lang') => $this->app->basePath().'/resources/lang'
+            realpath(__DIR__.'/resources/lang') => $this->app->basePath().'/resources/lang',
         ]);
 
-        /**
+        /*
          * Piblishes Public Assets
          */
         $this->publishes([
             __DIR__.'/public' => public_path('gallery_assets'),
         ], 'public');
-
     }
 
     /**
