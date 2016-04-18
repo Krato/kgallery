@@ -1,4 +1,6 @@
-<?php namespace Infinety\Gallery\Controllers;
+<?php
+
+namespace Infinety\Gallery\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -6,8 +8,8 @@ use starter\Http\Controllers\Controller;
 use Infinety\Gallery\Models\GalleryCategories;
 use Yajra\Datatables\Datatables;
 
-class CategoryController extends Controller {
-
+class CategoryController extends Controller
+{
     /**
      * CategoryController constructor.
      */
@@ -17,7 +19,7 @@ class CategoryController extends Controller {
     }
 
     /**
-     * Galleries list
+     * Galleries list.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -27,25 +29,26 @@ class CategoryController extends Controller {
     }
 
     /**
-     * Get Data of Categories
+     * Get Data of Categories.
      *
      * @return mixed
      */
     public function getData()
     {
         $categories = GalleryCategories::select('id', 'title');
+
         return Datatables::of($categories)
             ->addColumn('action', function ($category) {
                 $actions = '<a href="" data-edit="'.$category->id.'" data-toggle="modal" data-target="#editModal" class="btn btn-xs btn-primary m-r-10"><i class="glyphicon glyphicon-edit"></i> '.trans('kgallery.options.edit').'</a>';
-                $actions.= '<a href="k_categories/delete/'.$category->id.'" class="btn btn-xs btn-danger trash"><i class="glyphicon glyphicon-trash"></i> '.trans('kgallery.options.delete').'</a>';
+                $actions .= '<a href="k_categories/delete/'.$category->id.'" class="btn btn-xs btn-danger trash"><i class="glyphicon glyphicon-trash"></i> '.trans('kgallery.options.delete').'</a>';
+
                 return $actions;
             })
             ->make(true);
     }
 
-
     /**
-     * Create new category
+     * Create new category.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -53,12 +56,12 @@ class CategoryController extends Controller {
     public function postIndex(Request $request)
     {
         GalleryCategories::create($request->all());
+
         return redirect()->back();
     }
 
-
     /**
-     * Updates given category
+     * Updates given category.
      *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -68,21 +71,22 @@ class CategoryController extends Controller {
         $category = GalleryCategories::findOrFail($request->get('cat_id'));
         $existsTitle = GalleryCategories::whereTitle($request->get('title'))->count();
 
-        if($category) {
+        if ($category) {
             if ($existsTitle == 0) {
                 $category->title = $request->get('title');
                 $category->save();
                 Session::flash('message', trans('kgallery.messages.success'));
+
                 return redirect()->back();
             }
         }
         Session::flash('error', trans('kgallery.messages.error'));
+
         return redirect()->back();
     }
 
-
     /**
-     * Delete given Category
+     * Delete given Category.
      *
      * @param $id
      * @return string
@@ -90,16 +94,14 @@ class CategoryController extends Controller {
     public function deleteDelete($id)
     {
         $category = GalleryCategories::findOrFail($id);
-        if($category->delete()){
+        if ($category->delete()) {
             return json_encode(true);
         } else {
             abort('404', 'Error on delete');
         }
     }
 
-
     /**
-     *
      * Allow replace the default views by placing a view with the same name.
      * If no such view exists, load the one from the package.
      *
@@ -111,13 +113,9 @@ class CategoryController extends Controller {
     protected function firstViewThatExists($first_view, $second_view, $information = [])
     {
         // load the first view if it exists, otherwise load the second one
-        if (view()->exists($first_view))
-        {
-
+        if (view()->exists($first_view)) {
             return view($first_view, $information);
-        }
-        else
-        {
+        } else {
             return view($second_view, $information);
         }
     }
