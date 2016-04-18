@@ -1,5 +1,4 @@
 <?php
-
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,10 +6,11 @@ use Cviebrock\EloquentSluggable\SluggableInterface;
 use Cviebrock\EloquentSluggable\SluggableTrait;
 
 /**
- * Class GalleryCategories.
+ * Class GalleryCategories
+ * @package Infinety\Gallery\Models
  */
-class GalleryCategories extends Model implements SluggableInterface
-{
+class GalleryCategories extends Model implements SluggableInterface{
+
     use SluggableTrait;
 
     protected $sluggable = [
@@ -23,8 +23,8 @@ class GalleryCategories extends Model implements SluggableInterface
 
     protected $fillable = ['title'];
 
-    public function gallery()
-    {
+    public function gallery(){
         return $this->belongsToMany('Infinety\Gallery\Models\Gallery');
     }
+
 }

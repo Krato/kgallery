@@ -40,19 +40,29 @@
                         <div class="col-xs-6 col-md-3 photo-item sortable" id="photo_{{ $photo->id }}">
                             <div class="panel panel-default">
                                 <div class="panel-image">
-                                    <img src="{{ $photo->getUrl() }}" class="panel-image-preview " />
-                                    <label for="toggle-{{ $photo->id }}"></label>
+                                    <figure class="gallery-photo">
+                                        <img data-source="{{ $photo->getUrl() }}" class="panel-image-preview loading-gif" />
+                                        <figcaption>
+                                            <ul class="no-style">
+                                                <li><a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in fs-24"></span></a></li>
+                                                <li><a href="{{ url('admin/galleries/photo/'.$photo->id) }}" class="trash"><span class="glyphicon glyphicon-trash fs-24"></span></a></li>
+                                                <li><a href="#" class="move"><span class="glyphicon glyphicon-move fs-24"></span></a></li>
+                                            </ul>
+                                        </figcaption>
+                                    </figure>
+
+                                    <label for="toggle-{{ $photo->id }}" class=""></label>
                                 </div>
-                                <input type="checkbox" id="toggle-{{ $photo->id }}" class="panel-image-toggle">
+                                <input type="checkbox" id="toggle-{{ $photo->id }}" class="panel-image-toggle hidden">
                                 <div class="panel-body">
                                     <h4 data-pk="{{ $photo->id }}" class="name">{{ $photo->name }}</h4>
                                     <p data-pk="{{ $photo->id }}" class="description">{{ $photo->description }}</p>
                                 </div>
-                                <div class="panel-footer text-center">
-                                    <a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in"></span></a>
-                                    <a href="{{ url('admin/galleries/photo/'.$photo->id) }}" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
-                                    <a href="#" class="move"><span class="glyphicon glyphicon-move"></span></a>
-                                </div>
+                                {{--<div class="panel-footer text-center">--}}
+                                    {{--<a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in"></span></a>--}}
+                                    {{--<a href="{{ url('admin/galleries/photo/'.$photo->id) }}" class="trash"><span class="glyphicon glyphicon-trash"></span></a>--}}
+                                    {{--<a href="#" class="move"><span class="glyphicon glyphicon-move"></span></a>--}}
+                                {{--</div>--}}
                             </div>
                         </div>
                     @endforeach
@@ -80,6 +90,27 @@
     <script src="{{ asset('/gallery_assets/vendor/dmuploader/js/dmuploader.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/gallery_assets/vendor/dmuploader/js/gallery.js') }}" type="text/javascript"></script>
 
+    <script type="text/javascript">
+
+        $(function() {
+            $('.panel-image-preview').lazy({
+                effect: 'fadeIn',
+                visibleOnly: true,
+                attribute: 'data-source',
+                onError: function(element) {
+                    element.removeClass('loading-gif');
+                },
+                afterLoad: function(element) {
+                    console.log(element);
+                    element.removeClass('loading-gif');
+                },
+                onFinishedAll: function(element) {
+                    element.removeClass('loading-gif');
+                }
+            });
+        });
+
+    </script>
     <script type="application/javascript">
 
         $('.lightbox').lightbox();

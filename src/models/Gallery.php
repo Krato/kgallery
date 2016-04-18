@@ -1,5 +1,4 @@
 <?php
-
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,10 +7,11 @@ use Cviebrock\EloquentSluggable\SluggableTrait;
 use Infinety\Gallery\Events\GalleryEvents;
 
 /**
- * Class Gallery.
+ * Class Gallery
+ * @package Infinety\Gallery\Models
  */
-class Gallery extends Model implements SluggableInterface
-{
+class Gallery extends Model implements SluggableInterface{
+
     protected $table = 'gallery';
     protected $fillable = ['title'];
     protected $guarded = ['_token', '_method'];
@@ -25,23 +25,21 @@ class Gallery extends Model implements SluggableInterface
         'on_update'     => true,
     ];
 
-    public function photos()
-    {
+    public function photos(){
         return $this->hasMany('Infinety\Gallery\Models\Photos')->orderBy('position');
     }
 
-    public function categories()
-    {
+    public function categories(){
         return $this->belongsToMany('Infinety\Gallery\Models\GalleryCategories');
     }
 
-    public function getPrincipalPhoto()
-    {
+    public function getPrincipalPhoto(){
         $principal = $this->photos()->where('position', 0)->first();
-        if ($principal) {
+        if($principal){
             return asset($principal->getUrl());
         } else {
             return asset('/assets/img/no-image.jpg');
         }
     }
+
 }

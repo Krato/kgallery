@@ -1,8 +1,9 @@
 {
   "name": "infinety-es/gallery",
-  "description": "Laravel 5 Photo Gallery System - KGallery",
+  "description": "Laravel 5 Photo Gallery System",
   "keywords": ["gallery", "photo", "laravel 5", "infinety"],
   "license": "MIT",
+  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Eric Lagarda",
@@ -12,17 +13,7 @@
   "require": {
     "php": ">=5.5.9",
     "yajra/laravel-datatables-oracle": "~6.0"
-  },
-  "autoload": {
-        "psr-4": {
-            "Infinety\\Gallery\\": "src"
-        }
-    },
-  "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
-    }
+  }
+  "minimum-stability": "dev"
 
 }
