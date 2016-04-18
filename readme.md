@@ -9,22 +9,24 @@ KGallery is a photo gallery system for Laravel 5.
 
 First require this package:
 
-```sh
-composer require infinety/kgallery
-```
+\`\`\`sh
+composer require infinety-es/gallery
+\`\`\`
 
 Then you need to create a custom Filesystem drive on `filesystem.php`:
-```php
-    'gallery' => [
-        'driver' => 'local',
-        'root'   => base_path('public/gallery_assets'),
-    ]
-```
+\`\`\`php
+	'gallery' => [
+	    'driver' => 'local',
+	    'root'   => base_path('public/gallery_assets'),
+	]
+\`\`\`
 
+Add Service Provider:
+`Infinety\Gallery\GalleryServiceProvider::class,`
 
 Add Links for Admin routes:
 
-`url('admin/galleries')` for Galleries   
+`url('admin/galleries')` for Galleries  
 `url('admin/galleries/categories')` for Categories
 
 
@@ -33,8 +35,7 @@ Add Links for Admin routes:
  * Front Views
 
 License
-----
+---- 
 
 MIT
-
 
