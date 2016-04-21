@@ -55,8 +55,21 @@
                                 </div>
                                 <input type="checkbox" id="toggle-{{ $photo->id }}" class="panel-image-toggle hidden">
                                 <div class="panel-body">
-                                    <h4 data-pk="{{ $photo->id }}" class="name">{{ $photo->name }}</h4>
-                                    <p data-pk="{{ $photo->id }}" class="description">{{ $photo->description }}</p>
+                                    <ul class="nav nav-tabs  nav-tabs-simple">
+                                        @foreach($locales as $key => $locale)
+                                            <li class="{{ ($key == 0) ? 'active' : '' }}">
+                                                <a data-toggle="tab" href="#{{ $locale->iso }}-{{$photo->id}}">{{ $locale->language }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <div class="tab-content">
+                                        @foreach($locales as $key => $locale)
+                                            <div class="tab-pane {{ ($key == 0) ? 'active' : '' }}" id="{{ $locale->iso }}-{{$photo->id}}">
+                                                <h4 data-pk="{{ $photo->id }}" data-lang="{{ $locale->iso }}" class="name">{{ $photo->translate($locale->iso)->name }}</h4>
+                                                <p data-pk="{{ $photo->id }}" data-lang="{{ $locale->iso }}" class="description">{{ $photo->translate($locale->iso)->description }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                                 {{--<div class="panel-footer text-center">--}}
                                     {{--<a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in"></span></a>--}}
@@ -101,11 +114,10 @@
                     element.removeClass('loading-gif');
                 },
                 afterLoad: function(element) {
-                    console.log(element);
                     element.removeClass('loading-gif');
                 },
                 onFinishedAll: function(element) {
-                    element.removeClass('loading-gif');
+                    $('img').removeClass('loading-gif');
                 }
             });
         });
@@ -114,7 +126,8 @@
     <script type="application/javascript">
 
         $('.lightbox').lightbox();
-
+        var locales = {!! json_encode($locales->toArray()) !!};
+        console.log(locales);
 
         function editables(){
 
@@ -132,6 +145,11 @@
                 ajaxOptions: {
                     type: 'put',
                     dataType: 'json'
+                },
+                params: function(params) {
+                    params.lang = $(this).data('lang');
+                    params._token = "{{ csrf_token() }}";
+                    return params;
                 },
                 emptytext: '{{ trans('kgallery.editable.name') }}',
                 placeholder: '{{ trans('kgallery.editable.name') }}',
@@ -178,10 +196,10 @@
             dataType: 'json',
             allowedTypes: 'image/*',
             onInit: function(){
-                $.gallery.addLog("Init");
+//                $.gallery.addLog("Init");
             },
             onBeforeUpload: function(id){
-                $.gallery.addLog(id);
+//                $.gallery.addLog(id);
             },
             onNewFile: function(id, file){
 
@@ -217,7 +235,8 @@
             },
             onUploadSuccess: function(id, data){
                 $("#file-"+id).remove();
-                $.gallery.addFileUploaded(data.id, data.file, data.delete_url);
+
+                $.gallery.addFileUploaded(data.id, data.file, data.delete_url, locales);
                 editables();
             },
             onUploadError: function(id, message){
@@ -284,7 +303,7 @@
 
             },
             create: function( event, ui ) {
-                console.log(ui);
+//                console.log(ui);
             }
         });
 
