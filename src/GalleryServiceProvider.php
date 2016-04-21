@@ -3,6 +3,7 @@
 namespace Infinety\Gallery;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
 
 class GalleryServiceProvider extends ServiceProvider
 {
@@ -17,9 +18,7 @@ class GalleryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (! $this->app->routesAreCached()) {
-            require __DIR__.'/routes.php';
-        }
+
 
         $this->loadViewsFrom(__DIR__.'/resources/views/', 'gallery');
 
@@ -52,7 +51,25 @@ class GalleryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->make('Infinety\Gallery\Controllers\GalleryController');
-        $this->app->make('Infinety\Gallery\Controllers\CategoryController');
+        $this->setupRoutes($this->app->router);
+        $this->app->bind('Gallery', function ($app) {
+            return new Gallery($app);
+        });
     }
+
+    /**
+     * Define the routes for the application.
+     * @param Router $router
+     */
+
+    public function setupRoutes(Router $router)
+    {
+        $router->group(['namespace' => 'Infinety\Gallery\Controllers'], function($router)
+        {
+            if (! $this->app->routesAreCached()) {
+                require __DIR__.'/routes.php';
+            }
+        });
+    }
+
 }
