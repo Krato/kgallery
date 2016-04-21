@@ -9,6 +9,7 @@ use starter\Http\Controllers\Controller;
 use Infinety\Gallery\Models\Categories;
 use Infinety\Gallery\Models\Gallery;
 use Infinety\Gallery\Models\Photos;
+use starter\Http\Locale;
 use Yajra\Datatables\Datatables;
 use Infinety\Gallery\Facades\PhotoUploadFacade;
 
@@ -69,8 +70,7 @@ class GalleryController extends Controller
     public function getCreate()
     {
         $categories = GalleryCategories::all();
-
-        return view('gallery::admin.form', ['action' => 'create', 'categories' => $categories]);
+        return $this->firstViewThatExists('admin/gallery/list', 'gallery::admin.list', ['action' => 'create', 'categories' => $categories]);
     }
 
     /**
@@ -106,8 +106,7 @@ class GalleryController extends Controller
         $gallery = Gallery::find($id);
         if ($gallery) {
             $categories = GalleryCategories::all();
-
-            return view('gallery::admin.form', ['action' => 'edit', 'gallery' => $gallery, 'categories' => $categories, 'galleryCategories' => $gallery->categories()->lists('id')]);
+            return $this->firstViewThatExists('admin/gallery/form', 'gallery::admin.form', ['action' => 'edit', 'gallery' => $gallery, 'categories' => $categories, 'galleryCategories' => $gallery->categories()->lists('id')]);
         }
 
         return redirect()->to('admin/gallery');
@@ -160,7 +159,8 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::find($id);
         if ($gallery) {
-            return view('gallery::admin.photos', compact('gallery'));
+            $locales = Locale::where('state', 1)->get();
+            return $this->firstViewThatExists('admin/gallery/photos', 'gallery::admin.photos', compact('gallery', 'locales'));
         }
 
         return redirect()->to('admin/galleries');
@@ -208,8 +208,9 @@ class GalleryController extends Controller
      */
     public function putPhotoinfo(Request $request)
     {
+
         $photo = Photos::findOrFail($request['pk']);
-        $photo->$request['name'] = $request->get('value');
+        $photo->translate($request['lang'])->$request['name'] = $request->get('value');
         $photo->save();
 
         return json_encode(true);

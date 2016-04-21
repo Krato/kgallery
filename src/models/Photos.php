@@ -5,15 +5,21 @@ namespace Infinety\Gallery\Models;
 use Illuminate\Database\Eloquent\Model;
 use Infinety\Gallery\Events\PhotoEvents;
 
+use Vinkla\Translator\Translatable;
+use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
+
 /**
  * Class Photos.
  */
-class Photos extends Model
+class Photos extends Model implements TranslatableContract
 {
-    use PhotoEvents;
+    use PhotoEvents, Translatable;
 
     protected $table = 'photo';
     protected $fillable = ['file', 'name', 'description', 'position', 'state', 'gallery_id'];
+    protected $translator = 'Infinety\Gallery\Models\PhotosTranslation';
+    protected $translatedAttributes = ['name', 'description'];
+
 
     public function gallery()
     {
