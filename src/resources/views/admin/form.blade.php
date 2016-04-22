@@ -40,11 +40,24 @@
                     @endif
                     @if($action == 'edit')
                             <div class="col-sm-7">
+                                <ul class="nav nav-tabs nav-tabs-fillup">
+                                    @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                        <li class="{{(strpos(LaravelLocalization::getCurrentLocale(), $localeCode )!== false) ? 'active' : '' }}">
+                                            <a data-toggle="tab" href="#{{strtolower($properties['name'])}}">{{{ $properties['native'] }}}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
                                 <h5>{{ trans('kgallery.name') }}</h5>
-                                <div class="form-group form-group-default required" aria-required="true">
-                                    <label>{{ trans('kgallery.gallery_name') }}</label>
-                                    <input type="text" class="form-control" name="title" value="{{ $gallery->title }}" required="" aria-required="true">
-                                    <input type="hidden" class="form-control" name="gallery_id" value="{{ $gallery->id }}">
+                                <div class="tab-content bg-transparent">
+                                @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                    <div class="tab-pane {{(strpos(LaravelLocalization::getCurrentLocale(), $localeCode )!== false) ? 'active' : '' }}" id="{{strtolower($properties['name'])}}">
+                                        <div class="form-group form-group-default required" aria-required="true">
+                                            <label>{{ trans('kgallery.gallery_name') }}</label>
+                                            <input type="text" class="form-control" name="title-{{ $localeCode }}" value="{{ $gallery->translate($localeCode)->title }}" required="" aria-required="true">
+                                            <input type="hidden" class="form-control" name="gallery_id" value="{{ $gallery->id }}">
+                                        </div>
+                                    </div>
+                                @endforeach
                                 </div>
                             </div>
                             <div class="col-sm-5">
@@ -66,10 +79,24 @@
                     @else
                             <div class="col-sm-7">
                                 <h5>{{ trans('kgallery.name') }}</h5>
-                                <div class="form-group form-group-default required" aria-required="true">
-                                    <label>{{ trans('kgallery.name_place') }}</label>
-                                    <input type="text" class="form-control" name="title" required="" aria-required="true">
+                                <ul class="nav nav-tabs nav-tabs-fillup">
+                                    @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                        <li class="{{(strpos(LaravelLocalization::getCurrentLocale(), $localeCode )!== false) ? 'active' : '' }}">
+                                            <a data-toggle="tab" href="#{{strtolower($properties['name'])}}">{{{ $properties['native'] }}}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                <div class="tab-content bg-transparent">
+                                @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                    <div class="tab-pane {{(strpos(LaravelLocalization::getCurrentLocale(), $localeCode )!== false) ? 'active' : '' }}" id="{{strtolower($properties['name'])}}">
+                                        <div class="form-group form-group-default required" aria-required="true">
+                                            <label>{{ trans('kgallery.name_place') }}</label>
+                                            <input type="text" class="form-control" name="title-{{ $localeCode }}" required="" aria-required="true">
+                                        </div>
+                                    </div>
+                                @endforeach
                                 </div>
+
                             </div>
                             <div class="col-sm-5">
                                 <h5>{{ trans('kgallery.categories.title') }}</h5>

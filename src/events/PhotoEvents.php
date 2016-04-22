@@ -14,9 +14,8 @@ trait PhotoEvents
 
             $changed = $model->getDirty();
             if (isset($changed['name'])) {
-                $slug = $model->gallery->slug;
-                $path = public_path().'/gallery_assets/galleries/'.$slug;
-
+                $id = $model->gallery->id;
+                $path = public_path().'/gallery_assets/galleries/'.$id;
                 //Get old file
                 $oldPath = $path.'/'.$model->file;
                 $file = new File($oldPath);
@@ -40,8 +39,8 @@ trait PhotoEvents
         });
 
         static::deleting(function ($model) {
-            $slug = $model->gallery->slug;
-            $path = public_path().'/gallery_assets/galleries/'.$slug;
+            $id = $model->gallery->id;
+            $path = public_path().'/gallery_assets/galleries/'.$id;
             $oldPath = $path.'/'.$model->file;
             $file = new File($oldPath);
             @unlink($file); //@ to prevent errors

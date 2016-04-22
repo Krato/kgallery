@@ -17,7 +17,7 @@ class Photos extends Model implements TranslatableContract
 
     protected $table = 'photo';
     protected $fillable = ['file', 'name', 'description', 'position', 'state', 'gallery_id'];
-    protected $translator = 'Infinety\Gallery\Models\PhotosTranslation';
+    protected $translator = 'Infinety\Gallery\Models\PhotosTranslations';
     protected $translatedAttributes = ['name', 'description'];
 
 
@@ -30,7 +30,7 @@ class Photos extends Model implements TranslatableContract
     {
         $gallery = Gallery::find($this->gallery_id);
 
-        return url($this->hasPrepend().'gallery_assets/galleries', [$gallery->slug, $this->file]);
+        return url($this->hasPrepend().'gallery_assets/galleries', [$gallery->id, $this->file]);
     }
 
     public function scopeFilterByGallery($query, $id)

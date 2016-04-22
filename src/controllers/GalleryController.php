@@ -70,7 +70,7 @@ class GalleryController extends Controller
     public function getCreate()
     {
         $categories = GalleryCategories::all();
-        return $this->firstViewThatExists('admin/gallery/list', 'gallery::admin.list', ['action' => 'create', 'categories' => $categories]);
+        return $this->firstViewThatExists('admin/gallery/form', 'gallery::admin.form', ['action' => 'create', 'categories' => $categories]);
     }
 
     /**
@@ -81,11 +81,20 @@ class GalleryController extends Controller
      */
     public function postIndex(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required|unique:gallery|max:255',
-        ]);
-        $gallery = Gallery::create($request->all());
-        if ($gallery) {
+
+        $rules = array();
+        $locales = Locale::where('state', 1)->get();
+        foreach($locales as $local){
+            $rules[] = ['title-'.$local->iso => 'required|unique:gallery_translations|max:255'];
+        }
+        $this->validate($request, $rules);
+
+        $gallery = new Gallery;
+        foreach($locales as $local){
+            $gallery->translate($local->iso)->title = $request['title-'.$local->iso];
+        }
+
+        if ($gallery->save()) {
             if ($request->has('cat') && is_array($request['cat'])) {
                 $gallery->categories()->sync($request['cat']);
             }

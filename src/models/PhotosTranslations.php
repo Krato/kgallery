@@ -5,7 +5,7 @@ namespace Infinety\Gallery\Models;
 use Illuminate\Database\Eloquent\Model;
 use Infinety\Gallery\Events\PhotoTranslatationsEvents;
 
-class PhotosTranslation extends Model
+class PhotosTranslations extends Model
 {
     use PhotoTranslatationsEvents;
 }

@@ -3,27 +3,26 @@
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\SluggableInterface;
-use Cviebrock\EloquentSluggable\SluggableTrait;
+
 use Infinety\Gallery\Events\GalleryEvents;
+
+use Vinkla\Translator\Translatable;
+use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 
 /**
  * Class Gallery.
  */
-class Gallery extends Model implements SluggableInterface
+class Gallery extends Model implements TranslatableContract
 {
+
+    use GalleryEvents, Translatable;
+
+
     protected $table = 'gallery';
-    protected $fillable = ['title'];
     protected $guarded = ['_token', '_method'];
 
-    use SluggableTrait;
-    use GalleryEvents;
-
-    protected $sluggable = [
-        'build_from'    => 'title',
-        'save_to'       => 'slug',
-        'on_update'     => true,
-    ];
+    protected $translator = 'Infinety\Gallery\Models\GalleryTranslations';
+    protected $translatedAttributes = ['title'];
 
     public function photos()
     {
