@@ -46,7 +46,7 @@ trait GalleryEvents
 
         static::deleting(function ($model) {
             $storage = Storage::disk('gallery');
-            $path = 'galleries/'.$model->title;
+            $path = 'galleries/'.$model->id;
             if ($storage->exists($path)) {
                 $storage->deleteDirectory($path);
             }

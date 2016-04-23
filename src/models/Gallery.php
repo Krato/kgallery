@@ -22,7 +22,7 @@ class Gallery extends Model implements TranslatableContract
     protected $guarded = ['_token', '_method'];
 
     protected $translator = 'Infinety\Gallery\Models\GalleryTranslations';
-    protected $translatedAttributes = ['title'];
+    protected $translatedAttributes = ['title', 'slug'];
 
     public function photos()
     {

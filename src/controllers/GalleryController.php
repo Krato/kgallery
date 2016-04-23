@@ -40,10 +40,12 @@ class GalleryController extends Controller
      */
     public function getData()
     {
-        $galleries = Gallery::select('id', 'title');
+        $galleries = Gallery::select('id');
 
         return Datatables::of($galleries)
-
+            ->addColumn('title', function ($gallery) {
+                return $gallery->title;
+            })
             ->addColumn('image', function ($gallery) {
               return '<img class="image_thumb" src='.$gallery->getPrincipalPhoto().'>';
             })
@@ -186,7 +188,7 @@ class GalleryController extends Controller
         $gallery = Gallery::find($request['gallery_id']);
         $lastPosition = Photos::filterByGallery($gallery->id)->max('position');
         if ($gallery) {
-            $file = PhotoUploadFacade::photoUpload($request['file'], $gallery->slug);
+            $file = PhotoUploadFacade::photoUpload($request['file'], $gallery->id);
             if ($file) {
                 $data = [
                     'file'          =>  $file,
