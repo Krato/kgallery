@@ -137,13 +137,15 @@ class GalleryController extends Controller
 
         $gallery = Gallery::find($request->get('gallery_id'));
 
-        //Check title is unique
-        $existsTitle = Gallery::whereTitle($request->get('title'))->count();
+        $locales = Locale::where('state', 1)->get();
+
 
         if ($gallery) {
-            if ($existsTitle == 0) {
-                $gallery->title = $request->get('title');
+
+            foreach($locales as $local){
+                $gallery->translate($local->iso)->title = $request['title-'.$local->iso];
             }
+            
             if ($request->has('cat') && is_array($request['cat'])) {
                 $gallery->categories()->sync($request['cat']);
             }
