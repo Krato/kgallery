@@ -29,10 +29,22 @@
                     <div class="modal-body">
                         <div class="row">
                             {!! Form::open(array('url' => 'admin/k_categories', 'method' =>  'POST' )) !!}
-                            <div class="col-sm-8">
-                                <div class="form-group form-group-default required" aria-required="true">
-                                    <input type="text" class="form-control" name="title" value="" required="" aria-required="true">
+                            <ul class="nav nav-tabs">
+                                @foreach($locales as $local)
+                                    <li class="{{(strpos(App::getLocale(), $local->iso) !== false) ? 'active' : '' }}">
+                                        <a data-toggle="tab" href="#{{strtolower($local->language)}}">{{ $local->language }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <div class="tab-content bg-transparent">
+                            @foreach($locales as $local)
+                                <div class="tab-pane {{(strpos(App::getLocale(), $local->iso) !== false) ? 'active' : '' }}" id="{{strtolower($local->language)}}">
+                                    <div class="form-group form-group-default required" aria-required="true">
+                                        <label>{{ trans('kgallery.name_place') }}</label>
+                                        <input type="text" class="form-control" name="title-{{ $local->iso }}" required="" aria-required="true">
+                                    </div>
                                 </div>
+                            @endforeach
                             </div>
                             <div lass="col-sm-4">
                                 <button class="btn btn-success  m-l-10" type="submit">{{ trans('kgallery.categories.create') }}</button>

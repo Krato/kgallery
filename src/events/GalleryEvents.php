@@ -12,9 +12,9 @@ trait GalleryEvents
 
         static::created(function ($model) {
 
-            $storage = Storage::disk('gallery');
-            $path = 'galleries/'.$model->id;
-            if (! $storage->exists($path)) {
+            $storage = Storage::disk(config('gallery.disk'));
+            $path = $model->id;
+            if (!$storage->exists($path)) {
                 $storage->makeDirectory($path);
 
                 return true;
@@ -44,9 +44,9 @@ trait GalleryEvents
 
         });
 
-        static::deleting(function ($model) {
-            $storage = Storage::disk('gallery');
-            $path = 'galleries/'.$model->id;
+        static::deleted(function ($model) {
+            $storage = Storage::disk(config('gallery.disk'));
+            $path = $model->id;
             if ($storage->exists($path)) {
                 $storage->deleteDirectory($path);
             }

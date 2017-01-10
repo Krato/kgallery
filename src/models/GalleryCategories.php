@@ -3,28 +3,57 @@
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\SluggableInterface;
-use Cviebrock\EloquentSluggable\SluggableTrait;
+use Vinkla\Translator\Translatable;
 
 /**
  * Class GalleryCategories.
  */
-class GalleryCategories extends Model implements SluggableInterface
+class GalleryCategories extends Model
 {
-    use SluggableTrait;
-
-    protected $sluggable = [
-        'build_from'    => 'title',
-        'save_to'       => 'slug',
-        'on_update'     => true,
-    ];
+    use Translatable;
 
     protected $table = 'gallery_categories';
 
-    protected $fillable = ['title'];
+    /**
+     * A list of methods protected from mass assignment.
+     *
+     * @var string[]
+     */
+    protected $guarded = ['_token', '_method'];
 
+    protected $fillable = ['title', 'locale'];
+
+    protected $translatable = ['title', 'slug', 'locale'];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['translations'];
+
+    /**
+     * Get the translations relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(GalleryCategoriesTranslations::class);
+    }
+
+    /**
+     * [gallery description].
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function gallery()
     {
         return $this->belongsToMany('Infinety\Gallery\Models\Gallery');
+    }
+
+    public function getTranslationsAttribute()
+    {
+        return $this->translations()->get();
     }
 }

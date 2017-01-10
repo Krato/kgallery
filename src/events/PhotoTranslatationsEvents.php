@@ -2,6 +2,7 @@
 
 namespace Infinety\Gallery\Events;
 
+use Illuminate\Support\Facades\Storage;
 use Infinety\Gallery\Models\Photos;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -16,7 +17,7 @@ trait PhotoTranslatationsEvents
             $changed = $model->getDirty();
 
             if (isset($changed['name'])) {
-                if(renamePhoto($model, $changed)){
+                if (renamePhoto($model, $changed)) {
                     return true;
                 } else {
                     return false;
@@ -38,24 +39,27 @@ trait PhotoTranslatationsEvents
             }
         });
 
-
-        function renamePhoto($model, $changed){
-            $model = Photos::find($model->photos_id);
+        function renamePhoto($model, $changed)
+        {
+            $model = Photos::find($model->photo_id);
             $id = $model->gallery->id;
-            $path = public_path().'/gallery_assets/galleries/'.$id;
+            $path = $id;
+
+            $storage = Storage::disk(config('gallery.disk'));
 
             //Get old file
             $oldPath = $path.'/'.$model->file;
-            $file = new File($oldPath);
+            $ext = pathinfo($model->file, PATHINFO_EXTENSION);
 
             //Set the new file with original extension
-            $newName = strtolower(str_slug($changed['name']).'_'.str_random(5)).'.'.$file->getExtension();
+            $newName = strtolower(str_slug($changed['name']).'_'.str_random(5)).'.'.$ext;
             $renamed = $path.'/'.$newName;
 
             //Rename asset
-            if (rename($file, $renamed)) {
+            if ($storage->move($oldPath, $renamed)) {
                 $model->file = $newName;
                 $model->save();
+
                 return true;
             } else {
                 return false;

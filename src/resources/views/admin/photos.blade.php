@@ -41,7 +41,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-image">
                                     <figure class="gallery-photo">
-                                        <img data-source="{{ $photo->getUrl() }}" class="panel-image-preview loading-gif" />
+                                        <img data-source="{{ $photo->getUrl() }}" class="panel-image-preview " />
                                         <figcaption>
                                             <ul class="no-style">
                                                 <li><a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in fs-24"></span></a></li>

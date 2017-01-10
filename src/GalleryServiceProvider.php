@@ -13,12 +13,12 @@ class GalleryServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot()
     {
-
+        $this->mergeConfigFrom(
+            __DIR__.'/config/config.php', 'gallery'
+        );
 
         $this->loadViewsFrom(__DIR__.'/resources/views/', 'gallery');
 
@@ -46,8 +46,6 @@ class GalleryServiceProvider extends ServiceProvider
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register()
     {
@@ -59,17 +57,15 @@ class GalleryServiceProvider extends ServiceProvider
 
     /**
      * Define the routes for the application.
+     *
      * @param Router $router
      */
-
     public function setupRoutes(Router $router)
     {
-        $router->group(['namespace' => 'Infinety\Gallery\Controllers'], function($router)
-        {
-            if (! $this->app->routesAreCached()) {
+        $router->group(['namespace' => 'Infinety\Gallery\Controllers'], function ($router) {
+            if (!$this->app->routesAreCached()) {
                 require __DIR__.'/routes.php';
             }
         });
     }
-
 }

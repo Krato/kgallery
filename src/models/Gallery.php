@@ -3,26 +3,30 @@
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Infinety\Gallery\Events\GalleryEvents;
-
 use Vinkla\Translator\Translatable;
-use Vinkla\Translator\Contracts\Translatable as TranslatableContract;
 
 /**
  * Class Gallery.
  */
-class Gallery extends Model implements TranslatableContract
+class Gallery extends Model
 {
-
     use GalleryEvents, Translatable;
-
 
     protected $table = 'gallery';
     protected $guarded = ['_token', '_method'];
 
-    protected $translator = 'Infinety\Gallery\Models\GalleryTranslations';
-    protected $translatedAttributes = ['title', 'slug'];
+    protected $translatable = ['title', 'slug'];
+
+    /**
+     * Get the translations relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(GalleryTranslations::class);
+    }
 
     public function photos()
     {
@@ -31,7 +35,7 @@ class Gallery extends Model implements TranslatableContract
 
     public function categories()
     {
-        return $this->belongsToMany('Infinety\Gallery\Models\GalleryCategories');
+        return $this->belongsToMany(GalleryCategories::class);
     }
 
     public function getPrincipalPhoto()

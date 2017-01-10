@@ -2,10 +2,12 @@
 
 namespace Infinety\Gallery\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Locale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use starter\Http\Controllers\Controller;
 use Infinety\Gallery\Models\GalleryCategories;
+use Infinety\Gallery\Models\GalleryCategoriesTranslations;
 use Yajra\Datatables\Datatables;
 
 class CategoryController extends Controller
@@ -23,9 +25,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getIndex()
+    public function index()
     {
-        return $this->firstViewThatExists('admin/gallery/list', 'gallery::admin.categories');
+        $locales = Locale::getAvailables();
+
+        return $this->firstViewThatExists('vendor/infinety/gallery/categories', 'gallery::admin.categories', compact('locales'));
     }
 
     /**
@@ -35,12 +39,15 @@ class CategoryController extends Controller
      */
     public function getData()
     {
-        $categories = GalleryCategories::select('id', 'title');
+        $categories = GalleryCategories::all();
 
         return Datatables::of($categories)
+            ->addColumn('title', function ($category) {
+                return $category->title;
+            })
             ->addColumn('action', function ($category) {
-                $actions = '<a href="" data-edit="'.$category->id.'" data-toggle="modal" data-target="#editModal" class="btn btn-xs btn-primary m-r-10"><i class="glyphicon glyphicon-edit"></i> '.trans('kgallery.options.edit').'</a>';
-                $actions .= '<a href="k_categories/delete/'.$category->id.'" class="btn btn-xs btn-danger trash"><i class="glyphicon glyphicon-trash"></i> '.trans('kgallery.options.delete').'</a>';
+                $actions = '<a href="" data-edit="'.$category->id.'" data-toggle="modal" data-target="#editModal" class="btn btn-xs btn-complete mr5"><i class="fa fa-pencil"></i> '.trans('kgallery.options.edit').'</a>';
+                $actions .= '<a href="k_categories/delete/'.$category->id.'" class="btn btn-xs btn-danger m-l-5" data-button-type="delete"><i class="fa fa-trash-o"></i> '.trans('kgallery.options.delete').'</a>';
 
                 return $actions;
             })
@@ -51,29 +58,69 @@ class CategoryController extends Controller
      * Create new category.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postIndex(Request $request)
+    public function store(Request $request)
     {
-        GalleryCategories::create($request->all());
+        $rules = array();
+        $locales = Locale::getAvailables();
+        foreach ($locales as $local) {
+            $rules[] = ['title-'.$local->iso => 'required|unique:gallery_categories_translations|max:255'];
+        }
+        $this->validate($request, $rules);
+
+        $category = new GalleryCategories();
+        $translatedAttributes = [];
+        foreach ($locales as $local) {
+            $data = [
+                'locale' => $local->iso,
+                'title' => $request['title-'.$local->iso],
+            ];
+            array_push($translatedAttributes, $data);
+        }
+        $category->save();
+        $category->translations()->createMany($translatedAttributes);
+
+        Session::flash('message', trans('kgallery.messages.success'));
 
         return redirect()->back();
+    }
+
+    /**
+     * Galleries list.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show(GalleryCategories $category)
+    {
+        return response()->json($category);
     }
 
     /**
      * Updates given category.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function putIndex(Request $request)
+    public function update(GalleryCategories $category, Request $request)
     {
-        $category = GalleryCategories::findOrFail($request->get('cat_id'));
-        $existsTitle = GalleryCategories::whereTitle($request->get('title'))->count();
+        $locales = Locale::getAvailables();
+        $titles = [];
+        foreach ($locales as $local) {
+            $titles[] = $request->get('title-'.$local->iso);
+        }
+
+        $existsTitle = GalleryCategoriesTranslations::whereTitle($titles)->count();
 
         if ($category) {
             if ($existsTitle == 0) {
-                $category->title = $request->get('title');
+                foreach ($locales as $local) {
+                    $translated = $category->translate($local->iso);
+                    $translated->title = $request->get('title-'.$local->iso);
+                    $translated->save();
+                }
                 $category->save();
                 Session::flash('message', trans('kgallery.messages.success'));
 
@@ -89,6 +136,7 @@ class CategoryController extends Controller
      * Delete given Category.
      *
      * @param $id
+     *
      * @return string
      */
     public function deleteDelete($id)
@@ -108,6 +156,7 @@ class CategoryController extends Controller
      * @param $first_view
      * @param $second_view
      * @param array $information
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     protected function firstViewThatExists($first_view, $second_view, $information = [])

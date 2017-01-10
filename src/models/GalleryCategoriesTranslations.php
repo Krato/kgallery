@@ -5,11 +5,11 @@ namespace Infinety\Gallery\Models;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 
-class GalleryTranslations extends Model
+class GalleryCategoriesTranslations extends Model
 {
     use Sluggable;
 
-    protected $table = 'gallery_translations';
+    protected $table = 'gallery_categories_translations';
     protected $guarded = ['_token', '_method'];
     protected $fillable = ['title', 'locale'];
 
