@@ -3,27 +3,30 @@
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\SluggableInterface;
-use Cviebrock\EloquentSluggable\SluggableTrait;
 use Infinety\Gallery\Events\GalleryEvents;
+use Vinkla\Translator\Translatable;
 
 /**
  * Class Gallery.
  */
-class Gallery extends Model implements SluggableInterface
+class Gallery extends Model
 {
+    use GalleryEvents, Translatable;
+
     protected $table = 'gallery';
-    protected $fillable = ['title'];
     protected $guarded = ['_token', '_method'];
 
-    use SluggableTrait;
-    use GalleryEvents;
+    protected $translatable = ['title', 'slug'];
 
-    protected $sluggable = [
-        'build_from'    => 'title',
-        'save_to'       => 'slug',
-        'on_update'     => true,
-    ];
+    /**
+     * Get the translations relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(GalleryTranslations::class);
+    }
 
     public function photos()
     {
@@ -32,7 +35,7 @@ class Gallery extends Model implements SluggableInterface
 
     public function categories()
     {
-        return $this->belongsToMany('Infinety\Gallery\Models\GalleryCategories');
+        return $this->belongsToMany(GalleryCategories::class);
     }
 
     public function getPrincipalPhoto()

@@ -1,0 +1,66 @@
+.lazyload,
+.lazyloading {
+    opacity: 0;
+}
+.lazyloaded {
+    opacity: 1;
+    transition: opacity 300ms;
+}
+
+.uploading-files {
+    width: 100%;
+    margin: 0 20px;
+}
+
+.panel-photo {
+	box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    padding: 0 !important;
+}
+
+#content .panel-photo .panel-body {
+	margin-top: 0;
+}
+
+.panel-photo .panel-image img.panel-image-preview {
+	border-radius: 0;
+}
+
+.panel-photo .tab-block {
+	padding: 0 !important;
+}
+
+.gallery-photo figcaption{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	visibility: hidden;
+	opacity: 0;
+	padding: 10px 10px 0px 0px;
+	background-color: #FFF;
+	border-top-left-radius: 1.5em;
+	transition: visibility 0s, opacity 0.5s linear;
+	color: #9FB0BD;
+	transition: all 0.5s;
+	-moz-transition:all 0.5s;
+	-webkit-transition:all 0.5s;
+}
+.gallery-photo figcaption ul li{
+	float:left;
+	margin-left:7px;
+}
+.gallery-photo figcaption ul li a{
+	color: #9FB0BD;
+}
+
+.panel-image:hover figcaption{
+	visibility: visible;
+	opacity: 1;
+	z-index: 9;
+}
+
+.menu-divider{
+	margin: 20px 20px;
+	background: #788195;
+	height: 1px;
+}

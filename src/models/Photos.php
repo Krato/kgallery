@@ -3,17 +3,30 @@
 namespace Infinety\Gallery\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Infinety\Gallery\Events\PhotoEvents;
+use Vinkla\Translator\Translatable;
 
 /**
  * Class Photos.
  */
 class Photos extends Model
 {
-    use PhotoEvents;
+    use PhotoEvents, Translatable;
 
     protected $table = 'photo';
     protected $fillable = ['file', 'name', 'description', 'position', 'state', 'gallery_id'];
+    protected $translatable = ['name', 'description'];
+
+    /**
+     * Get the translations relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(PhotosTranslations::class, 'photo_id', 'id');
+    }
 
     public function gallery()
     {
@@ -24,7 +37,8 @@ class Photos extends Model
     {
         $gallery = Gallery::find($this->gallery_id);
 
-        return url($this->hasPrepend().'gallery_assets/galleries', [$gallery->slug, $this->file]);
+        return $this->generatePublicUrl($gallery->id.'/'.$this->file);
+        //return url($this->hasPrepend().$storagePath, [$gallery->id, $this->file]);
     }
 
     public function scopeFilterByGallery($query, $id)
@@ -39,5 +53,12 @@ class Photos extends Model
         } else {
             return '';
         }
+    }
+
+    private function generatePublicUrl($filePath)
+    {
+        $path = Storage::disk(config('gallery.disk'))->getDriver()->getAdapter()->applyPathPrefix($filePath);
+
+        return asset(str_replace(public_path(), '', $path));
     }
 }
