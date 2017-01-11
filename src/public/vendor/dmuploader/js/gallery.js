@@ -45,14 +45,14 @@
 
 		addFileUploaded : function(id, file, delete_ul, locales){
 			var template = '<div class="col-xs-6 col-md-3 photo-item sortable" id="photo_'+ id +'">' +
-								'<div class="panel panel-default">' +
+								'<div class="panel panel-default panel-photo">' +
 									'<div class="panel-image">' +
 										'<figure class="gallery-photo">' +
 											'<img src="'+ file +'" class="panel-image-preview " />' +
 											'<figcaption>' +
-												'<ul class="no-style">' +
+												'<ul class="list-unstyled image-tools">' +
 													'<li><a href="'+ file +'" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in fs-24"></span></a></li>' +
-													'<li><a href="'+ delete_ul +'" class="trash"><span class="glyphicon glyphicon-trash fs-24"></span></a></li>' +
+													'<li><a href="'+ delete_ul +'" data-photoid="'+ id + '" class="trash"><span class="glyphicon glyphicon-trash fs-24"></span></a></li>' +
 													'<li><a href="#" class="move"><span class="glyphicon glyphicon-move fs-24"></span></a></li>' +
 												'</ul>' +
 											'</figcaption>' +
@@ -60,10 +60,10 @@
 										'<label for="toggle-'+ id +'"></label>' +
 									'</div>' +
 									'<input type="checkbox" id="toggle-'+ id +'" class="panel-image-toggle hidden">' +
-									'<div class="panel-body">' +
-										'<ul class="nav nav-tabs  nav-tabs-simple">';
+									'<div class="panel-body tab-block">' +
+										'<ul class="nav nav-tabs nav-justified">';
 											for (index = 0; index < locales.length; ++index) {
-												var active = (index == 0) ? "active" : "";
+												var active = (currentLocale == locales[index]["iso"]) ? "active" : "";
 				template += 				'<li class="'+ active  +'">' +
 												'<a data-toggle="tab" href="#'+locales[index]["iso"]+'-'+id+'">'+locales[index]["language"]+'</a>' +
 											'</li>';
@@ -71,7 +71,7 @@
 				template +=				'</ul>' +
 										'<div class="tab-content">';
 											for (index = 0; index < locales.length; ++index) {
-												var active = (index == 0) ? "active" : "";
+												var active = (currentLocale == locales[index]["iso"]) ? "active" : "";
 				template +=					'<div class="tab-pane '+ active + '" id="'+locales[index]["iso"]+'-'+id+'">' +
 												'<h4 data-pk="'+ id +'" data-lang="'+locales[index]["iso"]+'" class="name"></h4>' +
 												'<p data-pk="'+ id +'" data-lang="'+locales[index]["iso"]+'" class="description"></p>' +

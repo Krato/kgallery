@@ -1,25 +1,28 @@
-@section('custom_css')
+@extends('layouts.default')
+@section('styles')
     <link type="text/css" rel="stylesheet" href="{{ asset('/gallery_assets/vendor/dmuploader/css/uploader.css') }}">
-
-
-    <link rel="stylesheet" type="text/css" href="{{ asset('/gallery_assets/vendor/jquery.lightbox/js/lightbox/themes/evolution/jquery.lightbox.css') }}" />
-    <!--[if IE 6]>
-    <link rel="stylesheet" type="text/css" href="{{ asset('/gallery_assets/vendor/jquery.lightbox/js/lightbox/themes/evolution/jquery.lightbox.ie6.css') }}" />
-    <![endif]-->
-
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
     <link href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet"/>
-
+    <link type="text/css" rel="stylesheet" href="{{ asset('/gallery_assets/css/gallery.css') }}">
+    <link href="//cdn.rawgit.com/noelboss/featherlight/1.7.0/release/featherlight.min.css" type="text/css" rel="stylesheet" />
 @stop
 @section('content')
-    <div class="box">
-        <div class="box-header with-border">
+<div class="container">
+    <div class="panel panel-default ">
+        <div class="panel-heading with-border">
             <div class="box-title m-b-20">
-                <h3>{{ trans('kgallery.gallery') }}: {{ $gallery->title }}</h3>
+                <div class="panel-title pull-left">
+                    <h3 style="margin: 0;">{{ trans('kgallery.gallery') }}: {{ $gallery->title }}</h3>
+                </div>
+                
+                <div class="pull-right">
+                    <a href="{{ route('galleries.index') }}" class="btn btn-info"><i class="fa fa-angle-left mr10"></i> {{ trans('kgallery.title') }}</a>
+                </div>
+                <div class="clearfix"></div>
             </div>
-
+            
         </div>
-        <div class="box--body" >
+        <div class="panel-body" >
 
             <div id="drag-and-drop-zone" class="uploader col-md-12 m-b-20">
                 {!! trans('kgallery.upload.info') !!}}
@@ -34,18 +37,18 @@
                     </div>
                 </div>
             </div>
-            <div class="gallery-images full-width p-t-20">
+            <div class="gallery-images full-width p-t-20" style="width:100%">
                 @foreach($gallery->photos->chunk(4) as $photos)
                     @foreach($photos as $photo)
                         <div class="col-xs-6 col-md-3 photo-item sortable" id="photo_{{ $photo->id }}">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default panel-photo">
                                 <div class="panel-image">
                                     <figure class="gallery-photo">
-                                        <img data-source="{{ $photo->getUrl() }}" class="panel-image-preview " />
+                                        <img data-src="{{ $photo->getUrl() }}" class="panel-image-preview loading-gif lazyload" />
                                         <figcaption>
-                                            <ul class="no-style">
-                                                <li><a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in fs-24"></span></a></li>
-                                                <li><a href="{{ url('admin/galleries/photo/'.$photo->id) }}" class="trash"><span class="glyphicon glyphicon-trash fs-24"></span></a></li>
+                                            <ul class="list-unstyled image-tools">
+                                                <li><a href="{{ $photo->getUrl() }}"  class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in fs-24"></span></a></li>
+                                                <li><a href="{{ route('delete-photo') }}" data-photoid="{{ $photo->id }}" class="trash"><span class="glyphicon glyphicon-trash fs-24"></span></a></li>
                                                 <li><a href="#" class="move"><span class="glyphicon glyphicon-move fs-24"></span></a></li>
                                             </ul>
                                         </figcaption>
@@ -54,28 +57,23 @@
                                     <label for="toggle-{{ $photo->id }}" class=""></label>
                                 </div>
                                 <input type="checkbox" id="toggle-{{ $photo->id }}" class="panel-image-toggle hidden">
-                                <div class="panel-body">
-                                    <ul class="nav nav-tabs  nav-tabs-simple">
-                                        @foreach($locales as $key => $locale)
-                                            <li class="{{ ($key == 0) ? 'active' : '' }}">
+                                <div class="panel-body tab-block">
+                                    <ul class="nav nav-tabs nav-justified ">
+                                        @foreach($locales as $locale)
+                                            <li class="{{ (App::getLocale() == $locale->iso) ? 'active' : '' }}">
                                                 <a data-toggle="tab" href="#{{ $locale->iso }}-{{$photo->id}}">{{ $locale->language }}</a>
                                             </li>
                                         @endforeach
                                     </ul>
                                     <div class="tab-content">
                                         @foreach($locales as $key => $locale)
-                                            <div class="tab-pane {{ ($key == 0) ? 'active' : '' }}" id="{{ $locale->iso }}-{{$photo->id}}">
+                                            <div class="tab-pane {{ (App::getLocale() == $locale->iso) ? 'active' : '' }}" id="{{ $locale->iso }}-{{$photo->id}}">
                                                 <h4 data-pk="{{ $photo->id }}" data-lang="{{ $locale->iso }}" class="name">{{ $photo->translate($locale->iso)->name }}</h4>
                                                 <p data-pk="{{ $photo->id }}" data-lang="{{ $locale->iso }}" class="description">{{ $photo->translate($locale->iso)->description }}</p>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
-                                {{--<div class="panel-footer text-center">--}}
-                                    {{--<a href="{{ $photo->getUrl() }}" class="lightbox" rel="gallery"><span class="glyphicon glyphicon-zoom-in"></span></a>--}}
-                                    {{--<a href="{{ url('admin/galleries/photo/'.$photo->id) }}" class="trash"><span class="glyphicon glyphicon-trash"></span></a>--}}
-                                    {{--<a href="#" class="move"><span class="glyphicon glyphicon-move"></span></a>--}}
-                                {{--</div>--}}
                             </div>
                         </div>
                     @endforeach
@@ -83,7 +81,7 @@
             </div>
         </div>
     </div>
-
+</div>
     <div id="zoomModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -94,40 +92,24 @@
         </div>
     </div>
 @stop
-@section('custom_js')
+@section('scripts')
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/2.0.7/lazysizes.min.js" integrity="sha256-5lWpzLGGPdMqO+0DUKHARGGsmfUZTuBZZDDtPmflOEw=" crossorigin="anonymous"></script>
     <script src="{{ asset('/gallery_assets/vendor/jquery.lightbox/js/lightbox/jquery.lightbox.min.js') }}" type="text/javascript"></script>
-
     <script src="{{ asset('/gallery_assets/vendor/dmuploader/js/dmuploader.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/gallery_assets/vendor/dmuploader/js/gallery.js') }}" type="text/javascript"></script>
-
-    <script type="text/javascript">
-
-        $(function() {
-            $('.panel-image-preview').lazy({
-                effect: 'fadeIn',
-                visibleOnly: true,
-                attribute: 'data-source',
-                onError: function(element) {
-                    element.removeClass('loading-gif');
-                },
-                afterLoad: function(element) {
-                    element.removeClass('loading-gif');
-                },
-                onFinishedAll: function(element) {
-                    $('img').removeClass('loading-gif');
-                }
-            });
-        });
-
-    </script>
+    <script src="//cdn.rawgit.com/noelboss/featherlight/1.7.0/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="application/javascript">
 
-        $('.lightbox').lightbox();
+        // $('.lightbox').lightbox();
+        $('.lightbox').featherlight({
+            targetAttr: 'href',
+            type: {image: true}
+        });
         var locales = {!! json_encode($locales->toArray()) !!};
-        console.log(locales);
+        var currentLocale = "{{ App::getLocale() }}";
 
         function editables(){
 
@@ -141,7 +123,7 @@
                 type: 'text',
                 pk: 1,
                 name: 'name',
-                url: '{{ url('admin/galleries/photoinfo') }}',
+                url: '{{ route('info-photo') }}',
                 ajaxOptions: {
                     type: 'put',
                     dataType: 'json'
@@ -166,7 +148,7 @@
             $('.description').editable({
                 type: 'textarea',
                 name: 'description',
-                url: '{{ url('admin/galleries/photoinfo') }}',
+                url: '{{ route('info-photo') }}',
                 emptytext: '{{ trans('kgallery.editable.desc') }}',
                 placeholder: '{{ trans('kgallery.editable.desc') }}',
                 title: '{{ trans('kgallery.editable.desc') }}',
@@ -190,7 +172,7 @@
 
 
         $('#drag-and-drop-zone').dmUploader({
-            url: '{{ url('admin/galleries/upload') }}',
+            url: '{{ route('upload-photo') }}',
             beforeSend: {"X-CSRF-TOKEN" : "{{ csrf_token() }}"},
             extraData: {'gallery_id' : {{ $gallery->id }} },
             dataType: 'json',
@@ -238,6 +220,10 @@
 
                 $.gallery.addFileUploaded(data.id, data.file, data.delete_url, locales);
                 editables();
+                $('.lightbox').featherlight({
+                    targetAttr: 'href',
+                    type: {image: true}
+                });
             },
             onUploadError: function(id, message){
 //                $.gallery.addLog(message);
@@ -279,7 +265,7 @@
 
 
                 $.ajax({
-                    url: "{{ url('admin/galleries/reorder') }}",
+                    url: "{{ route('reorder-photo') }}",
                     beforeSend: function (request){
                         request.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
                     },
@@ -289,14 +275,14 @@
                         new PNotify({
                             title: "{!! trans('kgallery.reorder.title_ok') !!}",
                             text: "{{ trans('kgallery.reorder.success') }}",
-                            type: "success"
+                            type: "info"
                         });
                     },
                     error: function(result) {
                         new PNotify({
                             title: "Error",
                             text: "{{ trans('kgallery.reorder.error') }}",
-                            type: "error"
+                            type: "dark"
                         });
                     }
                 });
@@ -313,6 +299,7 @@
             e.preventDefault();
             var delete_url = $(this).attr('href');
             var item = $(this).parentsUntil('.photo-item').parent();
+            var photoId = $(this).data('photoid');
 
             swal({
                 title: "{!! trans('kgallery.popup.title') !!}",
@@ -329,10 +316,13 @@
 
                     $.ajax({
                         url: delete_url,
+                        data: {
+                            'photo-id': photoId
+                        },
                         beforeSend: function (request){
                             request.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}");
                         },
-                        type: 'DELETE',
+                        type: 'POST',
                         success: function(result) {
                             swal("{!! trans('kgallery.popup.deleted_t') !!}", "{!! trans('kgallery.popup.deleted') !!}", "success");
                             item.remove();
@@ -350,4 +340,3 @@
 
     </script>
 @stop
-@include('admin.layout')

@@ -3,6 +3,7 @@
 namespace Infinety\Gallery\Events;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\File;
 
 trait PhotoEvents

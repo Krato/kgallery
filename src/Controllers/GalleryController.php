@@ -246,7 +246,7 @@ class GalleryController extends Controller
                     [
                         'id' => $photo->id,
                         'file' => $photo->getUrl(),
-                        'delete_url' => url('dashboard/galleries/remove-photo/'.$photo->id),
+                        'delete_url' => route('delete-photo'),
                     ]
                 );
             }
