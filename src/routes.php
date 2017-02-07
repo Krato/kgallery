@@ -13,7 +13,7 @@ Route::group(['prefix' => config('gallery.route-prefix'), 'middleware' => config
     Route::group([
         'as' => 'galleries.',
     ], function () {
-        Route::get('/galleries/index', ['as' => 'index', 'uses' => 'GalleryController@index']);
+        Route::get('/galleries', ['as' => 'index', 'uses' => 'GalleryController@index']);
         Route::post('/galleries/store', ['as' => 'store', 'uses' => 'GalleryController@store']);
         Route::get('/galleries/create', ['as' => 'create', 'uses' => 'GalleryController@create']);
         Route::delete('/galleries/{category}', ['as' => 'destroy', 'uses' => 'GalleryController@destroy']);
@@ -26,7 +26,7 @@ Route::group(['prefix' => config('gallery.route-prefix'), 'middleware' => config
     Route::group([
         'as' => 'categories.',
     ], function () {
-        Route::get('/categories/index', ['as' => 'index', 'uses' => 'CategoryController@index']);
+        Route::get('/categories', ['as' => 'index', 'uses' => 'CategoryController@index']);
         Route::post('/categories/store', ['as' => 'store', 'uses' => 'CategoryController@store']);
         Route::get('/categories/create', ['as' => 'create', 'uses' => 'CategoryController@create']);
         Route::delete('/categories/{category}', ['as' => 'destroy', 'uses' => 'CategoryController@destroy']);
