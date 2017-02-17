@@ -45,8 +45,8 @@ class GalleryController extends Controller
 
         $galleries = DB::table('gallery')
             ->join('gallery_translations', 'gallery_translations.gallery_id', '=', 'gallery.id')
-            ->join('gallery_gallery_categories', 'gallery_gallery_categories.gallery_id', '=', 'gallery.id')
-            ->join('gallery_categories', 'gallery_categories.id', '=', 'gallery_gallery_categories.gallery_categories_id')
+            ->leftJoin('gallery_gallery_categories', 'gallery_gallery_categories.gallery_id', '=', 'gallery.id')
+            ->leftJoin('gallery_categories', 'gallery_categories.id', '=', 'gallery_gallery_categories.gallery_categories_id')
             ->leftJoin('gallery_categories_translations', 'gallery_categories_translations.gallery_categories_id', '=', 'gallery_categories.id')
             ->select(['gallery.id', 'gallery_translations.title'])
             ->groupBy(['gallery.id']);
@@ -64,8 +64,8 @@ class GalleryController extends Controller
             })
             ->addColumn('action', function ($gallery) {
                 $gallery = Gallery::find($gallery->id);
-                $actions = '<a href="galleries/'.$gallery->id.'" class="btn btn-xs btn-success mr10"><i class="glyphicon glyphicon-eye-open"></i> '.trans('kgallery.options.see').'</a>';
-                $actions .= '<a href="galleries/'.$gallery->id.'/edit" class="btn btn-xs btn-primary mr10"><i class="glyphicon glyphicon-edit"></i> '.trans('kgallery.options.edit').'</a>';
+                $actions = '<a href="'.route('galleries.show', [$gallery->id]).'" class="btn btn-xs btn-success mr10"><i class="glyphicon glyphicon-eye-open"></i> '.trans('kgallery.options.see').'</a>';
+                $actions .= '<a href="'.route('galleries.edit', [$gallery->id]).'" class="btn btn-xs btn-primary mr10"><i class="glyphicon glyphicon-edit"></i> '.trans('kgallery.options.edit').'</a>';
                 $actions .= '<a href="galleries/'.$gallery->id.'" class="btn btn-xs btn-danger" data-button-type="delete"><i class="glyphicon glyphicon-trash"></i> '.trans('kgallery.options.delete').'</a>';
 
                 return $actions;

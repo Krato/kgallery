@@ -14,12 +14,12 @@ Route::group(['prefix' => config('gallery.route-prefix'), 'middleware' => config
         'as' => 'galleries.',
     ], function () {
         Route::get('/galleries', ['as' => 'index', 'uses' => 'GalleryController@index']);
+        Route::get('/galleries/{id}/show', ['as' => 'show', 'uses' => 'GalleryController@show']);
         Route::post('/galleries/store', ['as' => 'store', 'uses' => 'GalleryController@store']);
         Route::get('/galleries/create', ['as' => 'create', 'uses' => 'GalleryController@create']);
-        Route::delete('/galleries/{category}', ['as' => 'destroy', 'uses' => 'GalleryController@destroy']);
-        Route::get('/galleries/{category}', ['as' => 'show', 'uses' => 'GalleryController@show']);
-        Route::get('/galleries/{category}/edit', ['as' => 'edit', 'uses' => 'GalleryController@edit']);
-        Route::get('/galleries/{category}', ['as' => 'update', 'uses' => 'GalleryController@update']);
+        Route::delete('/galleries/{id}', ['as' => 'destroy', 'uses' => 'GalleryController@destroy']);
+        Route::get('/galleries/{id}/edit', ['as' => 'edit', 'uses' => 'GalleryController@edit']);
+        Route::put('/galleries/{id}', ['as' => 'update', 'uses' => 'GalleryController@update']);
     });
 
     Route::get('/categories/getData', ['as' => 'categories-data', 'uses' => 'CategoryController@getData']);
@@ -32,7 +32,7 @@ Route::group(['prefix' => config('gallery.route-prefix'), 'middleware' => config
         Route::delete('/categories/{category}', ['as' => 'destroy', 'uses' => 'CategoryController@destroy']);
         Route::get('/categories/{category}', ['as' => 'show', 'uses' => 'CategoryController@show']);
         Route::get('/categories/{category}/edit', ['as' => 'edit', 'uses' => 'CategoryController@edit']);
-        Route::get('/categories/{category}', ['as' => 'update', 'uses' => 'CategoryController@update']);
+        Route::put('/categories/{category}', ['as' => 'update', 'uses' => 'CategoryController@update']);
     });
 
     // Route::resource('/categories', 'CategoryController', ['as' => '']);

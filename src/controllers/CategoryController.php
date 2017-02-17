@@ -47,7 +47,7 @@ class CategoryController extends Controller
             })
             ->addColumn('action', function ($category) {
                 $actions = '<a href="" data-edit="'.$category->id.'" data-toggle="modal" data-target="#editModal" class="btn btn-xs btn-complete mr5"><i class="fa fa-pencil"></i> '.trans('kgallery.options.edit').'</a>';
-                $actions .= '<a href="k_categories/delete/'.$category->id.'" class="btn btn-xs btn-danger m-l-5" data-button-type="delete"><i class="fa fa-trash-o"></i> '.trans('kgallery.options.delete').'</a>';
+                $actions .= '<a href="'.route('categories.destroy', [$category->id]).'" class="btn btn-xs btn-danger m-l-5" data-button-type="delete"><i class="fa fa-trash-o"></i> '.trans('kgallery.options.delete').'</a>';
 
                 return $actions;
             })
@@ -139,7 +139,7 @@ class CategoryController extends Controller
      *
      * @return string
      */
-    public function deleteDelete($id)
+    public function destroy($id)
     {
         $category = GalleryCategories::findOrFail($id);
         if ($category->delete()) {
